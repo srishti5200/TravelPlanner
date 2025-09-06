@@ -44,9 +44,19 @@ export default function Navbar() {
             placeholder="Search for destinations..."
           />
 
-          {/* ✅ Show logout if logged in, else login/signup */}
+          {/* ✅ Show user info + logout if logged in */}
           {user ? (
-            <button onClick={logout} className="btn-outline text-red-600 font-semibold">Logout</button>
+            <div className="flex items-center gap-3">
+              <span className="font-medium text-gray-700">
+                Hi, {user.name || user.email}
+              </span>
+              <button
+                onClick={logout}
+                className="btn-outline text-red-600 font-semibold"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <>
               <Link to="/login" className="btn-outline">Login</Link>
@@ -65,12 +75,19 @@ export default function Navbar() {
             <li><NavLink to="/interests" onClick={() => setOpen(false)} className={linkCls}>Interests</NavLink></li>
             <li><NavLink to="/bookings" onClick={() => setOpen(false)} className={linkCls}>Bookings</NavLink></li>
 
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              {/* ✅ mobile auth buttons */}
+            <div className="grid grid-cols-1 gap-2 pt-2">
               {user ? (
-                <button onClick={() => { logout(); setOpen(false); }} className="btn-outline text-red-600 font-semibold">
-                  Logout
-                </button>
+                <>
+                  <span className="text-gray-700 font-medium px-2">
+                    Hi, {user.name || user.email}
+                  </span>
+                  <button
+                    onClick={() => { logout(); setOpen(false); }}
+                    className="btn-outline text-red-600 font-semibold"
+                  >
+                    Logout
+                  </button>
+                </>
               ) : (
                 <>
                   <Link to="/login" onClick={() => setOpen(false)} className="btn-outline">Login</Link>

@@ -5,19 +5,33 @@ import { useAuth } from "../context/AuthContext";
 const Signup = () => {
   const { signup } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    signup(form.name, form.email);
-    setForm({ name: "", email: "", password: "" }); // reset form
+    try {
+      await signup(form.name, form.email, form.password); // ✅ send all fields
+      setForm({ name: "", email: "", password: "" });     // reset form
+      setSuccess("Account created successfully! Please login.");
+      setError("");
+    } catch (err) {
+      setError("Signup failed. Please try again.");
+      setSuccess("");
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+
+        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+        {success && <p className="text-green-600 text-center mb-4">{success}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -53,6 +67,7 @@ const Signup = () => {
             Sign Up
           </button>
         </form>
+
         <p className="text-sm text-gray-600 mt-4 text-center">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">

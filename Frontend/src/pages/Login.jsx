@@ -5,19 +5,30 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(form.email); // store user
-    setForm({ email: "", password: "" }); // reset form
+    try {
+      await login(form.email, form.password); // ✅ call with both fields
+      setForm({ email: "", password: "" });   // reset form
+    } catch (error) {
+      setError("Invalid credentials. Please try again.");
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        {error && (
+          <p className="text-red-600 text-center mb-4">{error}</p>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -44,6 +55,7 @@ const Login = () => {
             Login
           </button>
         </form>
+
         <p className="text-sm text-gray-600 mt-4 text-center">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
